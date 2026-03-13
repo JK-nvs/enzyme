@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Enzyme</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CATALYX BIOTECH — Premium Enzyme Trading & Formulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8CB7A;
+  --gold-dark: #9A7A30;
+  --black: #050508;
+  --dark: #0C0C12;
+  --dark2: #12121C;
+  --dark3: #1A1A2A;
+  --cream: #F5F0E8;
+  --white: #FAFAF8;
+  --text-muted: #888899;
+  --border: rgba(201,168,76,0.2);
+  --glass: rgba(12,12,18,0.85);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--cream);font-family:'Josefin Sans',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* ========== CURSOR ========== */
+#cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .1s,width .3s,height .3s,background .3s;mix-blend-mode:difference;}
+#cursor-ring{position:fixed;width:44px;height:44px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .3s,height .3s,opacity .3s;opacity:0.6;}
+body:hover #cursor{opacity:1;}
+.cursor-grow #cursor{width:40px;height:40px;}
+.cursor-grow #cursor-ring{width:70px;height:70px;opacity:0.3;}
+
+/* ========== PRELOADER ========== */
+#preloader{position:fixed;inset:0;background:var(--black);z-index:99997;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.pre-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%, #1A1A2A 0%, #050508 70%);}
+.molecule-wrap{position:relative;width:200px;height:200px;margin-bottom:50px;}
+.molecule-ring{position:absolute;border-radius:50%;border:1px solid transparent;animation:spinRing 3s linear infinite;}
+.r1{width:200px;height:200px;top:0;left:0;border-color:rgba(201,168,76,0.6);animation-duration:4s;}
+.r2{width:150px;height:150px;top:25px;left:25px;border-color:rgba(201,168,76,0.4);animation-duration:3s;animation-direction:reverse;}
+.r3{width:100px;height:100px;top:50px;left:50px;border-color:rgba(201,168,76,0.3);animation-duration:2s;}
+@keyframes spinRing{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.mol-dot{position:absolute;width:10px;height:10px;background:var(--gold);border-radius:50%;box-shadow:0 0 15px var(--gold);animation:orbitDot 4s linear infinite;}
+.mol-dot:nth-child(2){width:7px;height:7px;background:var(--gold-light);animation-duration:3s;animation-direction:reverse;}
+.mol-dot:nth-child(3){width:5px;height:5px;background:#fff;animation-duration:2s;}
+@keyframes orbitDot{0%{top:0;left:95px}25%{top:95px;left:190px}50%{top:190px;left:95px}75%{top:95px;left:0}100%{top:0;left:95px}}
+.pre-logo{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;letter-spacing:18px;color:var(--gold);position:relative;z-index:1;text-align:center;opacity:0;animation:fadeInLogo 1s 1s forwards;}
+.pre-sub{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:5px;color:var(--text-muted);margin-top:10px;opacity:0;animation:fadeInLogo 1s 1.5s forwards;text-align:center;}
+@keyframes fadeInLogo{to{opacity:1}}
+.pre-bar-wrap{width:300px;height:1px;background:rgba(201,168,76,0.15);margin-top:50px;position:relative;overflow:hidden;opacity:0;animation:fadeInLogo 1s 1.8s forwards;}
+.pre-bar{height:100%;width:0;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:loadBar 2.5s 2s forwards cubic-bezier(.4,0,.2,1);}
+@keyframes loadBar{to{width:100%}}
+.pre-pct{font-size:11px;letter-spacing:3px;color:var(--text-muted);margin-top:15px;opacity:0;animation:fadeInLogo 1s 2s forwards;}
+.pre-particles{position:absolute;inset:0;overflow:hidden;}
+.pre-p{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:floatP 6s infinite;}
+@keyframes floatP{0%{opacity:0;transform:translateY(100vh)}50%{opacity:.6}100%{opacity:0;transform:translateY(-50px)}}
+#preloader.hide{animation:hidePreloader .8s forwards;}
+@keyframes hidePreloader{to{opacity:0;pointer-events:none;visibility:hidden}}
+
+/* ========== NAVBAR ========== */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:25px 60px;display:flex;align-items:center;justify-content:space-between;transition:all .5s;background:transparent;}
+nav.scrolled{background:rgba(5,5,8,0.95);backdrop-filter:blur(20px);padding:18px 60px;border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;letter-spacing:8px;color:var(--gold);text-decoration:none;}
+.nav-logo span{font-weight:700;}
+.nav-links{display:flex;gap:40px;list-style:none;align-items:center;}
+.nav-links a{color:rgba(245,240,232,0.75);text-decoration:none;font-size:11px;letter-spacing:3px;font-weight:400;transition:color .3s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 28px;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:4px;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .4s;}
+.nav-cta:hover{color:var(--black);}
+.nav-cta:hover::before{transform:translateX(0);}
+.nav-cta span{position:relative;z-index:1;}
+.hamburger{display:none;flex-direction:column;gap:6px;cursor:pointer;}
+.hamburger span{width:28px;height:1.5px;background:var(--gold);transition:all .3s;}
+
+/* ========== HERO ========== */
+#hero{position:relative;height:100vh;display:flex;align-items:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1920&q=80');background-size:cover;background-position:center;animation:heroZoom 20s infinite alternate;}
+@keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.08)}}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(120deg,rgba(5,5,8,0.92) 0%,rgba(5,5,8,0.6) 60%,rgba(5,5,8,0.4) 100%);}
+.hero-overlay2{position:absolute;inset:0;background:linear-gradient(to top,var(--black) 0%,transparent 40%);}
+#particles-canvas{position:absolute;inset:0;z-index:1;}
+.hero-content{position:relative;z-index:2;padding:0 60px;max-width:900px;}
+.hero-eyebrow{font-size:10px;letter-spacing:6px;color:var(--gold);margin-bottom:25px;display:flex;align-items:center;gap:15px;opacity:0;animation:slideUp .8s 3.8s forwards;}
+.hero-eyebrow::before{content:'';width:40px;height:1px;background:var(--gold);}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,6vw,92px);font-weight:300;line-height:1.05;margin-bottom:30px;color:var(--white);opacity:0;animation:slideUp .9s 4s forwards;}
+.hero-h1 em{font-style:italic;color:var(--gold);}
+.hero-h1 strong{font-weight:700;}
+.hero-desc{font-size:13px;letter-spacing:1.5px;line-height:1.9;color:rgba(245,240,232,0.65);max-width:520px;margin-bottom:50px;opacity:0;animation:slideUp .9s 4.2s forwards;}
+.hero-btns{display:flex;gap:20px;opacity:0;animation:slideUp .9s 4.4s forwards;}
+.btn-primary{background:var(--gold);color:var(--black);padding:16px 40px;font-size:10px;letter-spacing:4px;font-weight:600;border:none;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--gold-light);transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.btn-primary:hover::before{transform:scaleX(1);}
+.btn-primary span{position:relative;z-index:1;}
+.btn-secondary{background:transparent;color:var(--cream);padding:16px 40px;font-size:10px;letter-spacing:4px;font-weight:400;border:1px solid rgba(245,240,232,0.3);cursor:pointer;transition:all .4s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;animation:fadeIn 1s 5s forwards;}
+.scroll-line{width:1px;height:70px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s infinite;}
+@keyframes scrollPulse{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.scroll-text{font-size:9px;letter-spacing:4px;color:var(--text-muted);}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ========== MARQUEE ========== */
+.marquee-section{background:var(--dark);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:20px 0;overflow:hidden;position:relative;}
+.marquee-track{display:flex;white-space:nowrap;animation:marqueeScroll 25s linear infinite;}
+.marquee-item{padding:0 60px;font-size:11px;letter-spacing:5px;color:var(--text-muted);display:flex;align-items:center;gap:25px;}
+.marquee-item .dot{width:4px;height:4px;background:var(--gold);border-radius:50%;display:inline-block;}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ========== STATS ========== */
+.stats-section{padding:100px 60px;background:linear-gradient(180deg,var(--black) 0%,var(--dark) 100%);position:relative;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;max-width:1200px;margin:0 auto;}
+.stat-card{padding:60px 40px;border:1px solid var(--border);position:relative;overflow:hidden;text-align:center;transition:all .5s;background:var(--dark2);}
+.stat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.08) 0%,transparent 70%);opacity:0;transition:opacity .5s;}
+.stat-card:hover::before{opacity:1;}
+.stat-card:hover{border-color:var(--gold);transform:translateY(-5px);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--gold);line-height:1;display:block;}
+.stat-suffix{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--gold-light);}
+.stat-label{font-size:10px;letter-spacing:4px;color:var(--text-muted);margin-top:15px;display:block;}
+.stat-line{position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .5s;}
+.stat-card:hover .stat-line{transform:scaleX(1);}
+
+/* ========== SECTION COMMON ========== */
+.section{padding:120px 60px;}
+.section-tag{font-size:10px;letter-spacing:6px;color:var(--gold);display:flex;align-items:center;gap:15px;margin-bottom:25px;}
+.section-tag::before{content:'';width:30px;height:1px;background:var(--gold);}
+.section-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,4vw,68px);font-weight:300;line-height:1.1;color:var(--white);}
+.section-h2 em{font-style:italic;color:var(--gold);}
+
+/* ========== ABOUT ========== */
+#about{background:var(--dark);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;max-width:1300px;margin:0 auto;}
+.about-left .section-tag{justify-content:flex-start;}
+.about-text{font-size:14px;line-height:2;color:rgba(245,240,232,0.7);margin-top:30px;font-weight:300;}
+.about-features{margin-top:50px;display:flex;flex-direction:column;gap:0;}
+.feat-item{padding:22px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px;transition:all .3s;}
+.feat-item:hover{padding-left:10px;}
+.feat-icon{width:44px;height:44px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;flex-shrink:0;transition:all .3s;}
+.feat-item:hover .feat-icon{background:var(--gold);color:var(--black);border-color:var(--gold);}
+.feat-name{font-size:11px;letter-spacing:2px;color:var(--cream);}
+.feat-desc{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.about-right{position:relative;}
+.about-img-main{width:100%;height:580px;object-fit:cover;position:relative;z-index:1;}
+.about-img-float{position:absolute;bottom:-40px;left:-50px;width:250px;height:300px;object-fit:cover;border:4px solid var(--dark);z-index:2;}
+.about-badge{position:absolute;top:40px;right:-40px;width:130px;height:130px;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:3;}
+.badge-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;color:var(--black);line-height:1;}
+.badge-text{font-size:8px;letter-spacing:2px;color:var(--black);text-align:center;margin-top:5px;}
+
+/* ========== VISION STRIP ========== */
+.vision-strip{background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));padding:80px 60px;text-align:center;position:relative;overflow:hidden;}
+.vision-strip::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:500px;color:rgba(0,0,0,0.08);position:absolute;top:-150px;left:50%;transform:translateX(-50%);line-height:1;pointer-events:none;}
+.vision-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,42px);font-weight:400;font-style:italic;color:var(--black);max-width:900px;margin:0 auto;line-height:1.5;position:relative;z-index:1;}
+.vision-attr{font-size:10px;letter-spacing:5px;color:rgba(0,0,0,0.6);margin-top:30px;position:relative;z-index:1;}
+
+/* ========== INDUSTRIES ========== */
+#industries{background:var(--black);position:relative;overflow:hidden;}
+.ind-header{text-align:center;max-width:700px;margin:0 auto 80px;}
+.ind-header .section-tag{justify-content:center;}
+.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;max-width:1300px;margin:0 auto;}
+.ind-card{position:relative;height:450px;overflow:hidden;cursor:pointer;}
+.ind-card img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.4,0,.2,1);}
+.ind-card:hover img{transform:scale(1.12);}
+.ind-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,8,0.92) 0%,rgba(5,5,8,0.3) 60%,transparent 100%);transition:background .5s;}
+.ind-card:hover .ind-overlay{background:linear-gradient(to top,rgba(5,5,8,0.95) 0%,rgba(5,5,8,0.5) 60%,rgba(201,168,76,0.15) 100%);}
+.ind-content{position:absolute;bottom:0;left:0;right:0;padding:40px 35px;transition:all .5s;}
+.ind-num{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;color:rgba(201,168,76,0.2);line-height:1;display:block;transition:all .5s;}
+.ind-card:hover .ind-num{color:rgba(201,168,76,0.5);}
+.ind-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--white);margin-top:5px;display:block;}
+.ind-desc{font-size:11px;letter-spacing:1px;color:rgba(245,240,232,0.6);margin-top:15px;line-height:1.8;max-height:0;overflow:hidden;transition:max-height .5s,opacity .5s;opacity:0;}
+.ind-card:hover .ind-desc{max-height:100px;opacity:1;}
+.ind-arrow{display:inline-flex;align-items:center;gap:10px;font-size:10px;letter-spacing:3px;color:var(--gold);margin-top:15px;opacity:0;transform:translateY(10px);transition:all .5s;}
+.ind-card:hover .ind-arrow{opacity:1;transform:translateY(0);}
+
+/* ========== PRODUCTS ========== */
+#products{background:var(--dark);}
+.prod-header{text-align:center;max-width:700px;margin:0 auto 80px;}
+.prod-header .section-tag{justify-content:center;}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:25px;max-width:1300px;margin:0 auto;}
+.prod-card{background:var(--dark2);border:1px solid var(--border);padding:0;overflow:hidden;transition:all .5s;position:relative;cursor:pointer;}
+.prod-card:hover{border-color:var(--gold);transform:translateY(-8px);box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 40px rgba(201,168,76,0.1);}
+.prod-img{width:100%;height:200px;object-fit:cover;transition:transform .8s;}
+.prod-card:hover .prod-img{transform:scale(1.08);}
+.prod-body{padding:30px 25px;}
+.prod-cat{font-size:9px;letter-spacing:4px;color:var(--gold);margin-bottom:10px;}
+.prod-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--white);line-height:1.2;}
+.prod-desc{font-size:11px;color:var(--text-muted);margin-top:12px;line-height:1.8;}
+.prod-uses{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+.prod-tag{font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);color:var(--text-muted);transition:all .3s;}
+.prod-card:hover .prod-tag{border-color:rgba(201,168,76,0.3);color:var(--gold);}
+.prod-footer{display:flex;align-items:center;justify-content:space-between;padding:20px 25px;border-top:1px solid var(--border);}
+.prod-inquire{font-size:10px;letter-spacing:3px;color:var(--gold);cursor:pointer;transition:letter-spacing .3s;}
+.prod-inquire:hover{letter-spacing:5px;}
+.prod-icon{width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;transition:all .4s;}
+.prod-card:hover .prod-icon{background:var(--gold);color:var(--black);}
+
+/* ========== PROCESS ========== */
+#process{background:var(--black);position:relative;overflow:hidden;}
+.process-bg{position:absolute;right:0;top:0;height:100%;width:45%;background-image:url('https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=900&q=80');background-size:cover;background-position:center;opacity:0.12;}
+.process-container{max-width:1300px;margin:0 auto;position:relative;z-index:1;}
+.process-left{max-width:600px;}
+.process-steps{margin-top:70px;display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:40px;padding:40px 0;border-bottom:1px solid var(--border);position:relative;transition:all .4s;}
+.step:hover{padding-left:20px;}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:rgba(201,168,76,0.15);line-height:1;flex-shrink:0;width:80px;transition:color .4s;}
+.step:hover .step-num{color:rgba(201,168,76,0.5);}
+.step-content{}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--white);margin-bottom:12px;}
+.step-text{font-size:12px;letter-spacing:.5px;line-height:1.9;color:var(--text-muted);}
+.step-bar{position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:transform .6s;}
+.step:hover .step-bar{transform:scaleY(1);}
+
+/* ========== FOUNDERS ========== */
+#founders{background:linear-gradient(180deg,var(--dark) 0%,var(--dark3) 100%);}
+.founders-header{text-align:center;margin-bottom:80px;}
+.founders-header .section-tag{justify-content:center;}
+.founders-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1000px;margin:0 auto;}
+.founder-card{text-align:center;position:relative;}
+.founder-img-wrap{width:280px;height:340px;margin:0 auto;position:relative;}
+.founder-img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);}
+.founder-img-wrap::before{content:'';position:absolute;inset:-3px;border:1px solid var(--gold);z-index:-1;transition:all .5s;}
+.founder-card:hover .founder-img-wrap::before{inset:-10px;}
+.founder-gold-accent{position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:var(--gold);z-index:2;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.founder-title-badge{font-size:9px;letter-spacing:3px;color:var(--black);font-weight:700;}
+.founder-info{margin-top:50px;}
+.founder-name{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--white);}
+.founder-role{font-size:10px;letter-spacing:4px;color:var(--gold);margin-top:8px;}
+.founder-bio{font-size:12px;color:var(--text-muted);margin-top:20px;line-height:1.9;}
+.founder-socials{display:flex;justify-content:center;gap:15px;margin-top:25px;}
+.f-social{width:38px;height:38px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px;cursor:pointer;transition:all .3s;}
+.f-social:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ========== GALLERY ========== */
+#gallery{background:var(--black);padding:120px 60px;}
+.gallery-header{text-align:center;margin-bottom:60px;}
+.gallery-header .section-tag{justify-content:center;}
+.gallery-tabs{display:flex;justify-content:center;gap:0;margin-bottom:50px;border-bottom:1px solid var(--border);}
+.g-tab{padding:12px 30px;font-size:10px;letter-spacing:3px;color:var(--text-muted);cursor:pointer;transition:all .3s;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.g-tab.active,.g-tab:hover{color:var(--gold);border-bottom-color:var(--gold);}
+.gallery-masonry{columns:4;column-gap:8px;max-width:1400px;margin:0 auto;}
+.gal-item{break-inside:avoid;margin-bottom:8px;position:relative;overflow:hidden;cursor:pointer;}
+.gal-item img{width:100%;display:block;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.gal-item:hover img{transform:scale(1.08);}
+.gal-overlay{position:absolute;inset:0;background:rgba(5,5,8,0.7);opacity:0;transition:opacity .4s;display:flex;align-items:center;justify-content:center;}
+.gal-item:hover .gal-overlay{opacity:1;}
+.gal-zoom{width:50px;height:50px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;}
+
+/* ========== WHY US ========== */
+#why-us{background:var(--dark);}
+.why-split{display:grid;grid-template-columns:1fr 1fr;gap:100px;max-width:1300px;margin:0 auto;align-items:center;}
+.why-right .section-tag{justify-content:flex-start;}
+.why-cards{display:grid;grid-template-columns:1fr 1fr;gap:25px;margin-top:50px;}
+.why-card{padding:35px 30px;border:1px solid var(--border);background:var(--dark2);transition:all .5s;position:relative;overflow:hidden;}
+.why-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .5s;}
+.why-card:hover::after{transform:scaleX(1);}
+.why-card:hover{border-color:rgba(201,168,76,0.4);background:linear-gradient(135deg,var(--dark2),rgba(201,168,76,0.03));}
+.why-icon{font-size:28px;color:var(--gold);margin-bottom:20px;}
+.why-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--white);margin-bottom:12px;}
+.why-text{font-size:11px;line-height:1.9;color:var(--text-muted);}
+.why-img-stack{position:relative;}
+.why-img1{width:100%;height:450px;object-fit:cover;}
+.why-img2{position:absolute;bottom:-30px;right:-30px;width:220px;height:260px;object-fit:cover;border:5px solid var(--dark);}
+.why-img3{position:absolute;top:-30px;left:-30px;width:180px;height:180px;object-fit:cover;border:5px solid var(--dark);}
+
+/* ========== TESTIMONIALS ========== */
+#testimonials{background:linear-gradient(135deg,var(--dark3),var(--black));overflow:hidden;}
+.test-header{text-align:center;margin-bottom:70px;}
+.test-header .section-tag{justify-content:center;}
+.test-slider{max-width:900px;margin:0 auto;position:relative;overflow:hidden;}
+.test-track{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.test-slide{flex:0 0 100%;padding:0 20px;}
+.test-card{background:var(--dark2);border:1px solid var(--border);padding:60px;position:relative;text-align:center;}
+.test-stars{color:var(--gold);font-size:18px;letter-spacing:5px;margin-bottom:30px;}
+.test-quote{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,2.5vw,28px);font-style:italic;color:var(--white);line-height:1.6;}
+.test-author{margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.test-avatar{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);}
+.test-name{font-size:12px;letter-spacing:3px;color:var(--cream);}
+.test-company{font-size:10px;color:var(--text-muted);letter-spacing:2px;}
+.test-big-quote{position:absolute;top:20px;left:30px;font-family:'Cormorant Garamond',serif;font-size:120px;color:rgba(201,168,76,0.08);line-height:1;}
+.test-nav{display:flex;justify-content:center;gap:15px;margin-top:40px;}
+.test-dot{width:30px;height:2px;background:var(--border);cursor:pointer;transition:background .3s;}
+.test-dot.active{background:var(--gold);}
+.test-arrows{display:flex;justify-content:center;gap:15px;margin-top:30px;}
+.test-arr{width:50px;height:50px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);cursor:pointer;transition:all .3s;font-size:16px;}
+.test-arr:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ========== GLOBAL MAP ========== */
+#global{background:var(--black);padding:120px 60px;text-align:center;}
+.global-header{margin-bottom:70px;}
+.global-header .section-tag{justify-content:center;}
+.map-img{width:100%;max-width:1200px;margin:0 auto;display:block;filter:sepia(0.3) hue-rotate(10deg) saturate(0.8) brightness(0.9);border:1px solid var(--border);}
+.reach-stats{display:flex;justify-content:center;gap:80px;margin-top:70px;flex-wrap:wrap;}
+.reach-stat{text-align:center;}
+.reach-num{font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--gold);display:block;}
+.reach-label{font-size:10px;letter-spacing:4px;color:var(--text-muted);margin-top:8px;}
+
+/* ========== INQUIRY / CONTACT ========== */
+#contact{background:var(--dark3);padding:120px 60px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:100px;max-width:1300px;margin:0 auto;}
+.contact-left .section-tag{justify-content:flex-start;}
+.contact-info{margin-top:50px;display:flex;flex-direction:column;gap:35px;}
+.c-info-item{display:flex;gap:20px;align-items:flex-start;}
+.c-icon{width:50px;height:50px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;flex-shrink:0;transition:all .4s;}
+.c-info-item:hover .c-icon{background:var(--gold);color:var(--black);}
+.c-label{font-size:10px;letter-spacing:3px;color:var(--text-muted);}
+.c-value{font-size:14px;color:var(--cream);margin-top:5px;font-family:'Cormorant Garamond',serif;}
+.quick-reach{margin-top:50px;}
+.quick-title{font-size:10px;letter-spacing:4px;color:var(--text-muted);margin-bottom:20px;}
+.quick-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.quick-btn{padding:12px 22px;font-size:10px;letter-spacing:2px;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:8px;}
+.quick-btn:hover{border-color:var(--gold);color:var(--gold);}
+.contact-form{background:var(--dark2);border:1px solid var(--border);padding:60px;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--white);margin-bottom:40px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.form-group{margin-bottom:25px;}
+.form-group label{font-size:10px;letter-spacing:3px;color:var(--text-muted);display:block;margin-bottom:10px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:transparent;border:1px solid var(--border);padding:14px 18px;color:var(--cream);font-family:'Josefin Sans',sans-serif;font-size:13px;outline:none;transition:border-color .3s;-webkit-appearance:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);}
+.form-group textarea{resize:vertical;min-height:130px;}
+.form-group select option{background:var(--dark2);}
+.form-submit{width:100%;background:var(--gold);border:none;padding:18px;font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:5px;color:var(--black);font-weight:600;cursor:pointer;transition:all .4s;position:relative;overflow:hidden;}
+.form-submit::before{content:'';position:absolute;inset:0;background:var(--gold-dark);transform:translateX(-100%);transition:transform .4s;}
+.form-submit:hover::before{transform:translateX(0);}
+.form-submit span{position:relative;z-index:1;}
+.form-success{display:none;text-align:center;padding:40px;color:var(--gold);}
+.form-success i{font-size:48px;margin-bottom:20px;display:block;}
+
+/* ========== CTA STRIP ========== */
+.cta-strip{background:linear-gradient(135deg,var(--gold-dark),var(--gold));padding:100px 60px;text-align:center;position:relative;overflow:hidden;}
+.cta-strip::before{content:'';position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1200&q=50');background-size:cover;opacity:0.05;}
+.cta-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,72px);color:var(--black);font-weight:300;line-height:1.2;margin-bottom:20px;position:relative;}
+.cta-sub{font-size:12px;letter-spacing:2px;color:rgba(0,0,0,0.6);margin-bottom:50px;position:relative;}
+.cta-btns{display:flex;justify-content:center;gap:20px;position:relative;}
+.cta-btn1{background:var(--black);color:var(--gold);padding:18px 50px;font-size:11px;letter-spacing:4px;border:none;cursor:pointer;font-family:'Josefin Sans',sans-serif;transition:all .4s;}
+.cta-btn1:hover{background:var(--dark);transform:translateY(-3px);}
+.cta-btn2{background:transparent;color:var(--black);padding:18px 50px;font-size:11px;letter-spacing:4px;border:2px solid rgba(0,0,0,0.3);cursor:pointer;font-family:'Josefin Sans',sans-serif;transition:all .4s;}
+.cta-btn2:hover{border-color:var(--black);transform:translateY(-3px);}
+
+/* ========== FOOTER ========== */
+footer{background:var(--black);border-top:1px solid var(--border);padding:80px 60px 40px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px;}
+.footer-brand{}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;letter-spacing:6px;color:var(--gold);}
+.footer-tagline{font-size:11px;color:var(--text-muted);margin-top:15px;line-height:1.8;}
+.footer-socials{display:flex;gap:12px;margin-top:30px;}
+.f-soc{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);cursor:pointer;transition:all .3s;font-size:15px;}
+.f-soc:hover{border-color:var(--gold);color:var(--gold);}
+.footer-col h4{font-size:10px;letter-spacing:4px;color:var(--gold);margin-bottom:25px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.footer-col ul li a{font-size:12px;color:var(--text-muted);text-decoration:none;transition:color .3s;letter-spacing:1px;}
+.footer-col ul li a:hover{color:var(--cream);}
+.footer-bottom{padding-top:30px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-muted);letter-spacing:1px;}
+.footer-cr a{color:var(--gold);text-decoration:none;}
+
+/* ========== WHATSAPP FLOAT ========== */
+.wa-float{position:fixed;bottom:35px;right:35px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:12px;}
+.wa-btn{width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 8px 32px rgba(37,211,102,0.4);transition:all .4s;animation:waPulse 2s infinite;}
+@keyframes waPulse{0%,100%{box-shadow:0 8px 32px rgba(37,211,102,0.4)}50%{box-shadow:0 8px 50px rgba(37,211,102,0.7)}}
+.wa-btn:hover{transform:scale(1.15);}
+.wa-text{background:var(--dark2);border:1px solid var(--border);padding:8px 15px;font-size:10px;letter-spacing:2px;color:var(--cream);}
+
+/* ========== SCROLL REVEAL ========== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .9s,transform .9s;}
+.reveal-left.visible{opacity:1;transform:translateX(0);}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity .9s,transform .9s;}
+.reveal-right.visible{opacity:1;transform:translateX(0);}
+
+/* ========== LIGHTBOX ========== */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:10000;display:none;align-items:center;justify-content:center;}
+#lightbox.open{display:flex;}
+#lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;}
+#lightbox-close{position:absolute;top:30px;right:30px;font-size:28px;color:var(--gold);cursor:pointer;}
+
+/* ========== MODAL ========== */
+#inquiry-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10001;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px);}
+#inquiry-modal.open{display:flex;}
+.modal-box{background:var(--dark2);border:1px solid var(--gold);padding:60px;max-width:600px;width:90%;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:20px;right:20px;font-size:20px;color:var(--text-muted);cursor:pointer;transition:color .3s;}
+.modal-close:hover{color:var(--gold);}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--white);margin-bottom:10px;}
+.modal-sub{font-size:11px;color:var(--text-muted);letter-spacing:2px;margin-bottom:40px;}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:1024px){
+  .about-grid,.why-split,.contact-grid,.founders-grid{grid-template-columns:1fr;gap:60px;}
+  .ind-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-grid{grid-template-columns:repeat(2,1fr);}
+  .gallery-masonry{columns:3;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .about-img-float{display:none;}
+  .why-img2,.why-img3{display:none;}
+}
+@media(max-width:768px){
+  nav{padding:20px 25px;}
+  nav.scrolled{padding:15px 25px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .section{padding:80px 25px;}
+  .hero-content{padding:0 25px;}
+  .ind-grid{grid-template-columns:1fr;}
+  .prod-grid{grid-template-columns:1fr;}
+  .gallery-masonry{columns:2;}
+  .form-row{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .cta-btns{flex-direction:column;align-items:center;}
+  .why-cards{grid-template-columns:1fr;}
+  .founders-grid{grid-template-columns:1fr;}
+  .stats-section{padding:60px 25px;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-bg"></div>
+  <div class="pre-particles" id="preParticles"></div>
+  <div class="molecule-wrap">
+    <div class="molecule-ring r1"></div>
+    <div class="molecule-ring r2"></div>
+    <div class="molecule-ring r3"></div>
+    <div class="mol-dot"></div>
+    <div class="mol-dot"></div>
+    <div class="mol-dot"></div>
+  </div>
+  <div class="pre-logo">CATALYX<br><span style="font-size:24px;letter-spacing:25px;font-weight:300">BIOTECH</span></div>
+  <div class="pre-sub">PREMIUM ENZYME TRADING &amp; FORMULATION</div>
+  <div class="pre-bar-wrap"><div class="pre-bar"></div></div>
+  <div class="pre-pct" id="prePct">INITIALIZING</div>
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<div class="wa-float">
+  <div class="wa-text">💬 QUICK INQUIRY</div>
+  <div class="wa-btn" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i></div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">CAT<span>ALYX</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#industries">INDUSTRIES</a></li>
+    <li><a href="#products">PRODUCTS</a></li>
+    <li><a href="#founders">FOUNDERS</a></li>
+    <li><a href="#gallery">GALLERY</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+    <li><button class="nav-cta" onclick="openModal()"><span>INQUIRE NOW</span></button></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay2"></div>
+  <canvas id="particles-canvas"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">INDIA'S PREMIER ENZYME SOLUTIONS FIRM</p>
+    <h1 class="hero-h1">
+      Where <em>Science</em><br>
+      Meets <strong>Industry</strong><br>
+      Expertise
+    </h1>
+    <p class="hero-desc">Bridging global markets with India's finest enzyme contract manufacturers. Custom formulation, bulk trading, and tailored solutions for pharma, food, textile, and animal feed industries.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openModal()"><span>REQUEST A QUOTE</span></button>
+      <button class="btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">DISCOVER MORE</button>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">SCROLL TO EXPLORE</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><span class="dot"></span> PROTEASE</div>
+    <div class="marquee-item"><span class="dot"></span> AMYLASE</div>
+    <div class="marquee-item"><span class="dot"></span> LIPASE</div>
+    <div class="marquee-item"><span class="dot"></span> CELLULASE</div>
+    <div class="marquee-item"><span class="dot"></span> XYLANASE</div>
+    <div class="marquee-item"><span class="dot"></span> PHYTASE</div>
+    <div class="marquee-item"><span class="dot"></span> PECTINASE</div>
+    <div class="marquee-item"><span class="dot"></span> LACTASE</div>
+    <div class="marquee-item"><span class="dot"></span> KERATINASE</div>
+    <div class="marquee-item"><span class="dot"></span> BROMELAIN</div>
+    <div class="marquee-item"><span class="dot"></span> PAPAIN</div>
+    <div class="marquee-item"><span class="dot"></span> COAGULASE</div>
+    <!-- duplicate for loop -->
+    <div class="marquee-item"><span class="dot"></span> PROTEASE</div>
+    <div class="marquee-item"><span class="dot"></span> AMYLASE</div>
+    <div class="marquee-item"><span class="dot"></span> LIPASE</div>
+    <div class="marquee-item"><span class="dot"></span> CELLULASE</div>
+    <div class="marquee-item"><span class="dot"></span> XYLANASE</div>
+    <div class="marquee-item"><span class="dot"></span> PHYTASE</div>
+    <div class="marquee-item"><span class="dot"></span> PECTINASE</div>
+    <div class="marquee-item"><span class="dot"></span> LACTASE</div>
+    <div class="marquee-item"><span class="dot"></span> KERATINASE</div>
+    <div class="marquee-item"><span class="dot"></span> BROMELAIN</div>
+    <div class="marquee-item"><span class="dot"></span> PAPAIN</div>
+    <div class="marquee-item"><span class="dot"></span> COAGULASE</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="stats-section">
+  <div class="stats-grid">
+    <div class="stat-card reveal">
+      <span class="stat-num"><span class="counter" data-target="500">0</span><span class="stat-suffix">+</span></span>
+      <span class="stat-label">METRIC TONNES TRADED ANNUALLY</span>
+      <div class="stat-line"></div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.1s">
+      <span class="stat-num"><span class="counter" data-target="20">0</span><span class="stat-suffix">+</span></span>
+      <span class="stat-label">ENZYME VARIANTS IN PORTFOLIO</span>
+      <div class="stat-line"></div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.2s">
+      <span class="stat-num"><span class="counter" data-target="30">0</span><span class="stat-suffix">+</span></span>
+      <span class="stat-label">GLOBAL PARTNER COUNTRIES</span>
+      <div class="stat-line"></div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.3s">
+      <span class="stat-num"><span class="counter" data-target="6">0</span><span class="stat-suffix"></span></span>
+      <span class="stat-label">INDUSTRIES SERVED</span>
+      <div class="stat-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="about-grid">
+    <div class="about-left reveal-left">
+      <p class="section-tag">OUR STORY</p>
+      <h2 class="section-h2">India's Bridge to<br><em>Global Enzyme</em><br>Excellence</h2>
+      <p class="about-text">Catalyx Biotech was founded on a singular vision: to become the most trusted intermediary between India's world-class enzyme manufacturers and industries seeking premium-grade enzymatic solutions across the globe. Our founders, Manan Astik and Jenish Kanani, identified a critical gap — exceptional Indian manufacturing capability was largely invisible to global buyers, while international firms struggled to navigate the complex landscape of Indian biocatalyst production.</p>
+      <p class="about-text" style="margin-top:20px;">We are not merely traders. We are formulation experts, sourcing specialists, and quality custodians. Whether you need 5 tonnes of custom-stabilized protease for food processing or a specialized cellulase blend for textile treatment — we engineer the solution.</p>
+      <div class="about-features">
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-flask"></i></div>
+          <div>
+            <div class="feat-name">CUSTOM FORMULATION LABS</div>
+            <div class="feat-desc">Blending enzymes with stabilizers tailored to your exact industrial application</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-handshake"></i></div>
+          <div>
+            <div class="feat-name">CONTRACT MANUFACTURING BRIDGE</div>
+            <div class="feat-desc">Connecting global buyers to vetted Indian manufacturers with GMP certifications</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-globe-asia"></i></div>
+          <div>
+            <div class="feat-name">GLOBAL TRADE EXPERTISE</div>
+            <div class="feat-desc">Full documentation, export compliance, and international logistics management</div>
+          </div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon"><i class="fas fa-certificate"></i></div>
+          <div>
+            <div class="feat-name">QUALITY ASSURED</div>
+            <div class="feat-desc">Rigorous QC protocols at every stage from raw material to final formulation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-right reveal-right">
+      <img class="about-img-main" src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=800&q=80" alt="Lab Research">
+      <img class="about-img-float" src="https://images.unsplash.com/photo-1581093577421-f561a654a353?auto=format&fit=crop&w=400&q=80" alt="Enzyme Analysis">
+      <div class="about-badge">
+        <span class="badge-num">10+</span>
+        <span class="badge-text">YEARS OF EXPERTISE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION STRIP -->
+<div class="vision-strip">
+  <p class="vision-quote">"To make India the world's most trusted source of premium biocatalytic solutions — connecting innovation with industry, east with west, science with commerce."</p>
+  <p class="vision-attr">— MANAN ASTIK &amp; JENISH KANANI, FOUNDERS</p>
+</div>
+
+<!-- INDUSTRIES -->
+<section id="industries" class="section">
+  <div class="ind-header reveal">
+    <p class="section-tag">OUR DOMAINS</p>
+    <h2 class="section-h2">Industries We<br><em>Serve &amp; Transform</em></h2>
+  </div>
+  <div class="ind-grid">
+    <div class="ind-card reveal" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=800&q=80" alt="Animal Feed">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">01</span>
+        <span class="ind-name">Animal Feed</span>
+        <p class="ind-desc">Phytase, xylanase, and protease blends that enhance nutrient bioavailability, improve feed conversion ratios, and reduce phosphorus pollution in livestock operations.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+    <div class="ind-card reveal" style="transition-delay:.1s" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=800&q=80" alt="Pharmaceutical">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">02</span>
+        <span class="ind-name">Pharmaceutical</span>
+        <p class="ind-desc">USP/EP-grade enzymes for API synthesis, diagnostic reagents, and therapeutic applications. Full documentation for regulatory submissions worldwide.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+    <div class="ind-card reveal" style="transition-delay:.2s" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1558769221-a16c2d30e1e7?auto=format&fit=crop&w=800&q=80" alt="Textile">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">03</span>
+        <span class="ind-name">Textile</span>
+        <p class="ind-desc">Cellulase and amylase formulations for bio-polishing, desizing, and fabric softening — replacing harsh chemical processes with sustainable enzymatic treatments.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+    <div class="ind-card reveal" style="transition-delay:.3s" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80" alt="Food Processing">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">04</span>
+        <span class="ind-name">Food Processing</span>
+        <p class="ind-desc">Amylases, proteases, lipases and lactases for baking, brewing, dairy, meat processing, and fruit juice clarification. Food-grade certified with GRAS/EFSA status.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+    <div class="ind-card reveal" style="transition-delay:.4s" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1565687981296-535f09db714e?auto=format&fit=crop&w=800&q=80" alt="Biofuels">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">05</span>
+        <span class="ind-name">Biofuels &amp; Green Tech</span>
+        <p class="ind-desc">Cellulase and hemicellulase cocktails for lignocellulosic biomass conversion, enabling second-generation bioethanol production at scale.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+    <div class="ind-card reveal" style="transition-delay:.5s" onclick="openModal()">
+      <img src="https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?auto=format&fit=crop&w=800&q=80" alt="Specialty Chemicals">
+      <div class="ind-overlay"></div>
+      <div class="ind-content">
+        <span class="ind-num">06</span>
+        <span class="ind-name">Specialty Chemicals</span>
+        <p class="ind-desc">Industrial enzyme solutions for detergent, leather, paper, and wastewater treatment industries — crafted for performance under demanding process conditions.</p>
+        <span class="ind-arrow">INQUIRE <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products" class="section">
+  <div class="prod-header reveal">
+    <p class="section-tag">OUR PORTFOLIO</p>
+    <h2 class="section-h2">Flagship <em>Enzyme</em><br>Products</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:20px;line-height:1.8;">Available in bulk quantities, custom formulations, and stabilized preparations tailored to your specifications.</p>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-card reveal">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80" alt="Protease">
+      <div class="prod-body">
+        <p class="prod-cat">PROTEOLYTIC ENZYME</p>
+        <h3 class="prod-name">Protease Complex</h3>
+        <p class="prod-desc">Broad-spectrum endopeptidase with activity across pH 3–11. Available in alkaline, neutral, and acid variants with stabilizer formulations.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">FOOD</span>
+          <span class="prod-tag">PHARMA</span>
+          <span class="prod-tag">LEATHER</span>
+          <span class="prod-tag">FEED</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-vial"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.1s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80" alt="Amylase">
+      <div class="prod-body">
+        <p class="prod-cat">STARCH-DEGRADING ENZYME</p>
+        <h3 class="prod-name">Alpha-Amylase</h3>
+        <p class="prod-desc">High-temperature stable amylase for starch liquefaction. Thermostable variants active at 90°C+. Available with stabilizing maltodextrin base.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">BREWING</span>
+          <span class="prod-tag">BAKING</span>
+          <span class="prod-tag">TEXTILE</span>
+          <span class="prod-tag">BIOFUEL</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-atom"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.2s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=600&q=80" alt="Lipase">
+      <div class="prod-body">
+        <p class="prod-cat">FAT-SPLITTING ENZYME</p>
+        <h3 class="prod-name">Lipase Concentrate</h3>
+        <p class="prod-desc">Microbial lipase for fat hydrolysis, transesterification, and flavor development. Immobilized variants available for industrial reactors.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">DAIRY</span>
+          <span class="prod-tag">BAKING</span>
+          <span class="prod-tag">BIODIESEL</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-dna"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.3s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=600&q=80" alt="Cellulase">
+      <div class="prod-body">
+        <p class="prod-cat">CELLULOSE-DEGRADING ENZYME</p>
+        <h3 class="prod-name">Cellulase Blend</h3>
+        <p class="prod-desc">Complete cellulase complex for bio-polishing, paper deinking, and biomass conversion. Custom activity ratios for textile and pulp applications.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">TEXTILE</span>
+          <span class="prod-tag">PAPER</span>
+          <span class="prod-tag">BIOFUEL</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-microscope"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.4s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1588776814546-1ffbb3cd9c6c?auto=format&fit=crop&w=600&q=80" alt="Phytase">
+      <div class="prod-body">
+        <p class="prod-cat">PHOSPHORUS-RELEASING ENZYME</p>
+        <h3 class="prod-name">Phytase Premium</h3>
+        <p class="prod-desc">Granulated phytase for poultry and swine feed. Thermostable through pelleting at 85°C. Reduces inorganic phosphate supplementation by up to 60%.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">POULTRY</span>
+          <span class="prod-tag">SWINE</span>
+          <span class="prod-tag">AQUA</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-leaf"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.5s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd?auto=format&fit=crop&w=600&q=80" alt="Xylanase">
+      <div class="prod-body">
+        <p class="prod-cat">HEMICELLULOSE-DEGRADING ENZYME</p>
+        <h3 class="prod-name">Xylanase Multi</h3>
+        <p class="prod-desc">Endo-xylanase for viscosity reduction in wheat-based feed, paper bleaching assistance, and bread volume improvement. pH 4–8 active range.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">FEED</span>
+          <span class="prod-tag">BAKING</span>
+          <span class="prod-tag">PULP</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-flask-vial"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.6s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&w=600&q=80" alt="Pectinase">
+      <div class="prod-body">
+        <p class="prod-cat">PECTIN-DEGRADING ENZYME</p>
+        <h3 class="prod-name">Pectinase Complex</h3>
+        <p class="prod-desc">Polygalacturonase and pectin lyase blend for fruit juice clarification, wine making, and coffee/tea processing. Crystal-clear clarity guaranteed.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">JUICE</span>
+          <span class="prod-tag">WINE</span>
+          <span class="prod-tag">BEVERAGE</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">INQUIRE NOW</span>
+        <div class="prod-icon"><i class="fas fa-wine-bottle"></i></div>
+      </div>
+    </div>
+    <div class="prod-card reveal" style="transition-delay:.7s">
+      <img class="prod-img" src="https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?auto=format&fit=crop&w=600&q=80" alt="Custom Formulation">
+      <div class="prod-body">
+        <p class="prod-cat">BESPOKE SOLUTION</p>
+        <h3 class="prod-name">Custom Formulations</h3>
+        <p class="prod-desc">Your specification, our chemistry. We blend enzyme cocktails with stabilizers (maltodextrin, sorbitol, CaCl₂) optimized for your process conditions and shelf life.</p>
+        <div class="prod-uses">
+          <span class="prod-tag">ANY INDUSTRY</span>
+          <span class="prod-tag">BESPOKE</span>
+        </div>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-inquire" onclick="openModal()">DESIGN MY BLEND</span>
+        <div class="prod-icon"><i class="fas fa-cogs"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="section" style="background:var(--black);">
+  <div class="process-bg"></div>
+  <div class="process-container">
+    <div class="process-left">
+      <p class="section-tag reveal">HOW WE WORK</p>
+      <h2 class="section-h2 reveal">Our <em>Formulation</em><br>&amp; Supply Process</h2>
+      <div class="process-steps">
+        <div class="step reveal">
+          <div class="step-bar"></div>
+          <span class="step-num">01</span>
+          <div class="step-content">
+            <h3 class="step-title">Requirement Analysis</h3>
+            <p class="step-text">Deep consultation to understand your application, process conditions, pH range, temperature stability, regulatory requirements, and volume needs. We speak your industry language.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.1s">
+          <div class="step-bar"></div>
+          <span class="step-num">02</span>
+          <div class="step-content">
+            <h3 class="step-title">Sourcing &amp; Vendor Selection</h3>
+            <p class="step-text">We identify the optimal Indian manufacturer from our vetted network of GMP-certified facilities, comparing activity units, purity profiles, and certifications to match your spec exactly.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.2s">
+          <div class="step-bar"></div>
+          <span class="step-num">03</span>
+          <div class="step-content">
+            <h3 class="step-title">Bulk Procurement</h3>
+            <p class="step-text">We purchase in bulk (5–500 MT) to secure the best pricing, then hold inventory or forward purchase based on your delivery schedule. Full COA documentation provided.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.3s">
+          <div class="step-bar"></div>
+          <span class="step-num">04</span>
+          <div class="step-content">
+            <h3 class="step-title">Custom Formulation</h3>
+            <p class="step-text">In our formulation facility, we blend raw enzymes with stabilizers (maltodextrin, sorbitol, CaCl₂, glycerol), adjust activity to your target units, and optimize for shelf life and application performance.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.4s">
+          <div class="step-bar"></div>
+          <span class="step-num">05</span>
+          <div class="step-content">
+            <h3 class="step-title">Quality Control &amp; Dispatch</h3>
+            <p class="step-text">Every batch undergoes rigorous QC — activity assays, microbial testing, heavy metals, and stability testing. Full documentation package for regulatory filing. Export in optimized cold-chain or ambient packing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY IMAGE GRID -->
+<section id="gallery">
+  <div class="gallery-header reveal">
+    <p class="section-tag" style="justify-content:center">OUR WORLD</p>
+    <h2 class="section-h2" style="text-align:center">Enzyme Excellence<br><em>In Every Frame</em></h2>
+  </div>
+  <div class="gallery-tabs">
+    <div class="g-tab active" onclick="filterGallery('all',this)">ALL</div>
+    <div class="g-tab" onclick="filterGallery('lab',this)">LABORATORY</div>
+    <div class="g-tab" onclick="filterGallery('industry',this)">INDUSTRY</div>
+    <div class="g-tab" onclick="filterGallery('food',this)">FOOD</div>
+    <div class="g-tab" onclick="filterGallery('pharma',this)">PHARMA</div>
+  </div>
+  <div class="gallery-masonry" id="galleryGrid">
+    <!-- LAB IMAGES -->
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1581093577421-f561a654a353?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1614308460133-9cf01a1a2f39?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1628595351029-c2bf17511435?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?auto=format&fit=crop&w=500&q=80" alt="Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <!-- FOOD IMAGES -->
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=500&q=80" alt="Food"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=500&q=80" alt="Food"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=500&q=80" alt="Food"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1519996529931-28324d5a630e?auto=format&fit=crop&w=500&q=80" alt="Bread Baking"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1556742111-a301076d9d18?auto=format&fit=crop&w=500&q=80" alt="Dairy"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1551183660-d2229f4b1adf?auto=format&fit=crop&w=500&q=80" alt="Juice"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=500&q=80" alt="Brewing"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?auto=format&fit=crop&w=500&q=80" alt="Baking"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=500&q=80" alt="Food Processing"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=500&q=80" alt="Milk"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <!-- PHARMA IMAGES -->
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=500&q=80" alt="Pharma"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=500&q=80" alt="Medicine"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=500&q=80" alt="Pills"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1563213126-a4273aed2016?auto=format&fit=crop&w=500&q=80" alt="Capsules"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=500&q=80" alt="Medical"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=500&q=80" alt="Medicine"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <!-- INDUSTRY IMAGES -->
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1558769221-a16c2d30e1e7?auto=format&fit=crop&w=500&q=80" alt="Textile"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1565687981296-535f09db714e?auto=format&fit=crop&w=500&q=80" alt="Industrial"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?auto=format&fit=crop&w=500&q=80" alt="Factory"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&w=500&q=80" alt="Manufacturing"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?auto=format&fit=crop&w=500&q=80" alt="Supply Chain"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80" alt="Global Business"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=500&q=80" alt="Business"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=500&q=80" alt="Meeting"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1570126618953-d437176e8c79?auto=format&fit=crop&w=500&q=80" alt="Chemistry"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd?auto=format&fit=crop&w=500&q=80" alt="Poultry"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=500&q=80" alt="Molecules"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=500&q=80" alt="Science"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1602052577122-f73b9710adba?auto=format&fit=crop&w=500&q=80" alt="Research"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=500&q=80" alt="Dogs Feed"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=500&q=80" alt="Cheese"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1576765608866-5b51046452be?auto=format&fit=crop&w=500&q=80" alt="Science Lab"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1624555130581-1d9cca783bc0?auto=format&fit=crop&w=500&q=80" alt="Green Energy"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1530026186672-2cd00ffc50fe?auto=format&fit=crop&w=500&q=80" alt="Biochem"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1532635241-17e820acc59f?auto=format&fit=crop&w=500&q=80" alt="Fermentation"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=500&q=80" alt="Biotech"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&w=500&q=80" alt="Grain"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80" alt="Meat"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1556760544-74068565f05c?auto=format&fit=crop&w=500&q=80" alt="Feed Mill"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=500&q=80" alt="DNA"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="pharma"><img src="https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=500&q=80" alt="Capsule"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1569427776649-b4148fa1b374?auto=format&fit=crop&w=500&q=80" alt="Ship Export"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="food"><img src="https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=500&q=80" alt="Food Plant"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="lab"><img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=500&q=80" alt="Biochemistry"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+    <div class="gal-item" data-cat="industry"><img src="https://images.unsplash.com/photo-1566041510394-cf7c1b1edc10?auto=format&fit=crop&w=500&q=80" alt="Cattle Feed"><div class="gal-overlay"><div class="gal-zoom"><i class="fas fa-search-plus"></i></div></div></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why-us" class="section">
+  <div class="why-split">
+    <div class="why-left reveal-left">
+      <div class="why-img-stack" style="position:relative">
+        <img class="why-img1" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Global business">
+        <img class="why-img2" src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=400&q=80" alt="Partnership">
+        <img class="why-img3" src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=300&q=80" alt="Meeting">
+      </div>
+    </div>
+    <div class="why-right reveal-right">
+      <p class="section-tag">OUR EDGE</p>
+      <h2 class="section-h2">Why Global<br>Leaders Choose<br><em>Catalyx</em></h2>
+      <div class="why-cards">
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-industry"></i></div>
+          <h3 class="why-title">Indian Manufacturing Access</h3>
+          <p class="why-text">Direct relationships with India's top GMP-certified enzyme producers. You get factory-level pricing with the security of a trusted intermediary.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-flask"></i></div>
+          <h3 class="why-title">Formulation Expertise</h3>
+          <p class="why-text">We don't just trade — we engineer. Custom enzyme blends with stabilizers, carriers, and activity calibration for your exact process.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-file-alt"></i></div>
+          <h3 class="why-title">Full Documentation</h3>
+          <p class="why-text">COA, TDS, MSDS, halal/kosher certificates, FSSAI compliance, and export documentation handled end-to-end.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-shipping-fast"></i></div>
+          <h3 class="why-title">Flexible Logistics</h3>
+          <p class="why-text">From 5 kg sample to 500 MT bulk container. Air freight, sea freight, temperature-controlled — we optimize for your needs.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3 class="why-title">Quality Guarantee</h3>
+          <p class="why-text">Every batch independently tested. 100% activity guarantee or replacement. We stand behind every shipment with full accountability.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon"><i class="fas fa-comments"></i></div>
+          <h3 class="why-title">Dedicated Support</h3>
+          <p class="why-text">Founder-led key account management. Direct line to Manan or Jenish for critical decisions. We treat your business like our own.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section" style="background:linear-gradient(135deg,var(--dark3),var(--black));">
+  <div class="test-header reveal">
+    <p class="section-tag" style="justify-content:center">CLIENT VOICES</p>
+    <h2 class="section-h2" style="text-align:center">What Our <em>Partners</em> Say</h2>
+  </div>
+  <div class="test-slider reveal">
+    <div class="test-track" id="testTrack">
+      <div class="test-slide">
+        <div class="test-card">
+          <div class="test-big-quote">"</div>
+          <div class="test-stars">★★★★★</div>
+          <p class="test-quote">"Catalyx transformed our food processing line. The custom protease formulation they designed increased our yield by 18% while reducing processing time by a third. Exceptional technical knowledge."</p>
+          <div class="test-author">
+            <img class="test-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="">
+            <span class="test-name">THOMAS MUELLER</span>
+            <span class="test-company">PROCUREMENT DIRECTOR — GERMAN FOOD TECH AG</span>
+          </div>
+        </div>
+      </div>
+      <div class="test-slide">
+        <div class="test-card">
+          <div class="test-big-quote">"</div>
+          <div class="test-stars">★★★★★</div>
+          <p class="test-quote">"We were skeptical about sourcing from India but Catalyx changed our entire perspective. Their quality documentation surpassed EU standards and the phytase performs identically to our previous European supplier — at 40% less cost."</p>
+          <div class="test-author">
+            <img class="test-avatar" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=100&q=80" alt="">
+            <span class="test-name">SOPHIE LEBLANC</span>
+            <span class="test-company">HEAD OF SOURCING — FRANCE AGRI NUTRITION</span>
+          </div>
+        </div>
+      </div>
+      <div class="test-slide">
+        <div class="test-card">
+          <div class="test-big-quote">"</div>
+          <div class="test-stars">★★★★★</div>
+          <p class="test-quote">"The cellulase blend Catalyx formulated for our denim bio-washing process delivered perfect results. Even better — Manan personally guided our production team through the implementation. That kind of partnership is rare."</p>
+          <div class="test-author">
+            <img class="test-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" alt="">
+            <span class="test-name">RAHUL MEHTA</span>
+            <span class="test-company">COO — BLUESTONE TEXTILES LTD</span>
+          </div>
+        </div>
+      </div>
+      <div class="test-slide">
+        <div class="test-card">
+          <div class="test-big-quote">"</div>
+          <div class="test-stars">★★★★★</div>
+          <p class="test-quote">"Five tonnes of amylase, custom stabilized, delivered to our Singapore facility in 18 days with complete documentation. Catalyx's responsiveness and execution is unmatched in the enzyme trading space."</p>
+          <div class="test-author">
+            <img class="test-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" alt="">
+            <span class="test-name">DAVID TAN</span>
+            <span class="test-company">VP OPERATIONS — ASIA BEVERAGE CORP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="test-nav" id="testNav">
+      <div class="test-dot active" onclick="goToSlide(0)"></div>
+      <div class="test-dot" onclick="goToSlide(1)"></div>
+      <div class="test-dot" onclick="goToSlide(2)"></div>
+      <div class="test-dot" onclick="goToSlide(3)"></div>
+    </div>
+    <div class="test-arrows">
+      <div class="test-arr" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div>
+      <div class="test-arr" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDERS -->
+<section id="founders" class="section">
+  <div class="founders-header reveal">
+    <p class="section-tag" style="justify-content:center">LEADERSHIP</p>
+    <h2 class="section-h2" style="text-align:center">The Visionaries<br>Behind <em>Catalyx</em></h2>
+  </div>
+  <div class="founders-grid">
+    <div class="founder-card reveal-left">
+      <div class="founder-img-wrap">
+        <img class="founder-img" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80" alt="Manan Astik">
+        <div class="founder-gold-accent">
+          <span class="founder-title-badge">CEO</span>
+        </div>
+      </div>
+      <div class="founder-info">
+        <h3 class="founder-name">Manan Astik</h3>
+        <p class="founder-role">CHIEF EXECUTIVE OFFICER &amp; CO-FOUNDER</p>
+        <p class="founder-bio">A biochemical engineer with deep expertise in enzyme formulation and industrial biotechnology, Manan brings a decade of hands-on experience spanning pharmaceutical and food processing sectors. His vision to bridge Indian manufacturing excellence with global demand became the founding thesis of Catalyx Biotech.</p>
+        <div class="founder-socials">
+          <div class="f-social"><i class="fab fa-linkedin-in"></i></div>
+          <div class="f-social"><i class="fab fa-twitter"></i></div>
+          <div class="f-social" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="founder-card reveal-right">
+      <div class="founder-img-wrap">
+        <img class="founder-img" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" alt="Jenish Kanani">
+        <div class="founder-gold-accent">
+          <span class="founder-title-badge">MD</span>
+        </div>
+      </div>
+      <div class="founder-info">
+        <h3 class="founder-name">Jenish Kanani</h3>
+        <p class="founder-role">MANAGING DIRECTOR &amp; CO-FOUNDER</p>
+        <p class="founder-bio">A seasoned trade and supply chain professional with expertise in international commodities, Jenish architects the business development and global partnerships that make Catalyx a truly world-class operation. His network spans manufacturers in Gujarat, Maharashtra, and beyond, ensuring unparalleled sourcing capacity.</p>
+        <div class="founder-socials">
+          <div class="f-social"><i class="fab fa-linkedin-in"></i></div>
+          <div class="f-social"><i class="fab fa-twitter"></i></div>
+          <div class="f-social" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL REACH -->
+<section id="global" class="section" style="background:var(--dark2);padding:120px 60px;text-align:center;">
+  <div class="global-header reveal">
+    <p class="section-tag" style="justify-content:center">GLOBAL PRESENCE</p>
+    <h2 class="section-h2" style="text-align:center">Enzymes Made in <em>India</em>,<br>Delivered to the World</h2>
+  </div>
+  <img class="map-img reveal" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1400&q=80" alt="Global Map" style="margin-top:50px;">
+  <div class="reach-stats reveal">
+    <div class="reach-stat">
+      <span class="reach-num">30<span style="font-size:32px">+</span></span>
+      <span class="reach-label">EXPORT DESTINATIONS</span>
+    </div>
+    <div class="reach-stat">
+      <span class="reach-num">50<span style="font-size:32px">+</span></span>
+      <span class="reach-label">MANUFACTURER PARTNERS</span>
+    </div>
+    <div class="reach-stat">
+      <span class="reach-num">100<span style="font-size:32px">+</span></span>
+      <span class="reach-label">ENTERPRISE CLIENTS</span>
+    </div>
+    <div class="reach-stat">
+      <span class="reach-num">24<span style="font-size:24px">/7</span></span>
+      <span class="reach-label">SUPPORT ACROSS TIMEZONES</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <h2 class="cta-h2">Ready to Source<br>Premium Enzymes?</h2>
+  <p class="cta-sub">GET YOUR CUSTOM QUOTE WITHIN 24 HOURS</p>
+  <div class="cta-btns">
+    <button class="cta-btn1" onclick="openModal()">REQUEST A QUOTE</button>
+    <button class="cta-btn2" onclick="openWhatsApp()">💬 WHATSAPP US</button>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact" class="section" style="background:var(--dark3);padding:120px 60px;">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <p class="section-tag">GET IN TOUCH</p>
+      <h2 class="section-h2">Let's Build<br>Something<br><em>Remarkable</em></h2>
+      <div class="contact-info">
+        <div class="c-info-item reveal">
+          <div class="c-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <div class="c-label">REGISTERED OFFICE</div>
+            <div class="c-value">Gujarat, India — Heart of India's Chemical &amp; Biotech Belt</div>
+          </div>
+        </div>
+        <div class="c-info-item reveal">
+          <div class="c-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="c-label">EMAIL INQUIRY</div>
+            <div class="c-value">inquiry@catalyxbiotech.com</div>
+          </div>
+        </div>
+        <div class="c-info-item reveal">
+          <div class="c-icon"><i class="fab fa-whatsapp"></i></div>
+          <div>
+            <div class="c-label">WHATSAPP / PHONE</div>
+            <div class="c-value">+91 98765 43210</div>
+          </div>
+        </div>
+        <div class="c-info-item reveal">
+          <div class="c-icon"><i class="fas fa-clock"></i></div>
+          <div>
+            <div class="c-label">BUSINESS HOURS</div>
+            <div class="c-value">Mon–Sat: 9:00 AM – 7:00 PM IST</div>
+          </div>
+        </div>
+      </div>
+      <div class="quick-reach reveal">
+        <p class="quick-title">QUICK REACH CHANNELS</p>
+        <div class="quick-btns">
+          <div class="quick-btn" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i> WHATSAPP</div>
+          <div class="quick-btn" onclick="window.location='mailto:inquiry@catalyxbiotech.com'"><i class="fas fa-envelope"></i> EMAIL</div>
+          <div class="quick-btn" onclick="window.location='tel:+919876543210'"><i class="fas fa-phone"></i> CALL</div>
+          <div class="quick-btn" onclick="openModal()"><i class="fas fa-file-alt"></i> QUOTE FORM</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <h3 class="form-title">Send an Inquiry</h3>
+      <div id="contactFormWrap">
+        <div class="form-row">
+          <div class="form-group">
+            <label>FULL NAME *</label>
+            <input type="text" id="cf-name" placeholder="Your Name">
+          </div>
+          <div class="form-group">
+            <label>COMPANY *</label>
+            <input type="text" id="cf-company" placeholder="Company Name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>EMAIL *</label>
+            <input type="email" id="cf-email" placeholder="your@company.com">
+          </div>
+          <div class="form-group">
+            <label>PHONE / WHATSAPP</label>
+            <input type="tel" id="cf-phone" placeholder="+1 000 000 0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>INDUSTRY</label>
+          <select id="cf-industry">
+            <option value="">Select Your Industry</option>
+            <option>Food Processing</option>
+            <option>Pharmaceutical</option>
+            <option>Animal Feed</option>
+            <option>Textile</option>
+            <option>Biofuels</option>
+            <option>Specialty Chemicals</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ENZYME OF INTEREST</label>
+          <select id="cf-enzyme">
+            <option value="">Select Enzyme Type</option>
+            <option>Protease</option>
+            <option>Amylase</option>
+            <option>Lipase</option>
+            <option>Cellulase</option>
+            <option>Xylanase</option>
+            <option>Phytase</option>
+            <option>Pectinase</option>
+            <option>Custom Formulation</option>
+            <option>Multiple / Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ESTIMATED QUANTITY (KG/MT PER YEAR)</label>
+          <select id="cf-qty">
+            <option value="">Select Quantity Range</option>
+            <option>Below 100 kg</option>
+            <option>100 – 500 kg</option>
+            <option>500 kg – 5 MT</option>
+            <option>5 MT – 50 MT</option>
+            <option>50 MT – 500 MT</option>
+            <option>500 MT+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>YOUR REQUIREMENTS</label>
+          <textarea id="cf-msg" placeholder="Describe your enzyme needs, application details, required specifications, target pH/temperature, regulatory requirements..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitContactForm()"><span>SEND INQUIRY →</span></button>
+      </div>
+      <div class="form-success" id="contactSuccess">
+        <i class="fas fa-check-circle"></i>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--white)">Inquiry Received!</p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:10px;letter-spacing:2px">Our team will respond within 24 hours. Thank you for choosing Catalyx Biotech.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">CATALYX BIOTECH</div>
+      <p class="footer-tagline">India's premier enzyme trading and formulation firm. Connecting world-class Indian biocatalyst manufacturers with global industries since our founding. Trusted for quality, expertise, and personalized service.</p>
+      <div class="footer-socials">
+        <div class="f-soc"><i class="fab fa-linkedin-in"></i></div>
+        <div class="f-soc"><i class="fab fa-twitter"></i></div>
+        <div class="f-soc"><i class="fab fa-instagram"></i></div>
+        <div class="f-soc" onclick="openWhatsApp()"><i class="fab fa-whatsapp"></i></div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>PRODUCTS</h4>
+      <ul>
+        <li><a href="#products">Protease Complex</a></li>
+        <li><a href="#products">Alpha-Amylase</a></li>
+        <li><a href="#products">Lipase Concentrate</a></li>
+        <li><a href="#products">Cellulase Blend</a></li>
+        <li><a href="#products">Phytase Premium</a></li>
+        <li><a href="#products">Xylanase Multi</a></li>
+        <li><a href="#products">Custom Formulations</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>INDUSTRIES</h4>
+      <ul>
+        <li><a href="#industries">Animal Feed</a></li>
+        <li><a href="#industries">Pharmaceutical</a></li>
+        <li><a href="#industries">Textile</a></li>
+        <li><a href="#industries">Food Processing</a></li>
+        <li><a href="#industries">Biofuels</a></li>
+        <li><a href="#industries">Specialty Chemicals</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>COMPANY</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#founders">Leadership</a></li>
+        <li><a href="#process">Our Process</a></li>
+        <li><a href="#why-us">Why Catalyx</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="#" onclick="openModal()">Request Quote</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 CATALYX BIOTECH. ALL RIGHTS RESERVED. FOUNDED BY <a href="#founders">MANAN ASTIK &amp; JENISH KANANI</a>.</span>
+    <span>GUJARAT, INDIA 🇮🇳</span>
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <span id="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- INQUIRY MODAL -->
+<div id="inquiry-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></span>
+    <h2 class="modal-title">Request a Quote</h2>
+    <p class="modal-sub">WE RESPOND WITHIN 24 HOURS · FOUNDED BY MANAN ASTIK &amp; JENISH KANANI</p>
+    <div id="modalFormWrap">
+      <div class="form-row">
+        <div class="form-group">
+          <label>YOUR NAME *</label>
+          <input type="text" id="m-name" placeholder="Full Name">
+        </div>
+        <div class="form-group">
+          <label>COMPANY *</label>
+          <input type="text" id="m-company" placeholder="Company">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>EMAIL *</label>
+        <input type="email" id="m-email" placeholder="your@company.com">
+      </div>
+      <div class="form-group">
+        <label>INDUSTRY</label>
+        <select id="m-industry">
+          <option>Food Processing</option>
+          <option>Pharmaceutical</option>
+          <option>Animal Feed</option>
+          <option>Textile</option>
+          <option>Biofuels</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ENZYME &amp; REQUIREMENTS</label>
+        <textarea id="m-msg" placeholder="Tell us about your enzyme needs, quantities, and application..." style="min-height:100px"></textarea>
+      </div>
+      <button class="form-submit" onclick="submitModalForm()"><span>SUBMIT INQUIRY →</span></button>
+    </div>
+    <div class="form-success" id="modalSuccess">
+      <i class="fas fa-check-circle"></i>
+      <p style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--white)">Submitted Successfully!</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px;letter-spacing:2px">Manan or Jenish will personally reach out within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== CURSOR ==========
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}animRing();
+document.querySelectorAll('a,button,.ind-card,.prod-card,.gal-item,.test-arr,.f-social,.quick-btn,.wa-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-grow'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-grow'));
+});
+
+// ========== PRELOADER ==========
+const preParticles = document.getElementById('preParticles');
+for(let i=0;i<40;i++){
+  const p=document.createElement('div');
+  p.className='pre-p';
+  p.style.cssText=`left:${Math.random()*100}%;animation-delay:${Math.random()*6}s;animation-duration:${4+Math.random()*4}s;`;
+  preParticles.appendChild(p);
+}
+let pct=0;
+const pctEl=document.getElementById('prePct');
+const pctInterval=setInterval(()=>{
+  pct+=Math.floor(Math.random()*3)+1;
+  if(pct>=100){pct=100;clearInterval(pctInterval);}
+  const msgs=['INITIALIZING','LOADING ENZYMES','CALIBRATING','FORMULATING','READY'];
+  pctEl.textContent=msgs[Math.floor(pct/25)]||'READY';
+},50);
+setTimeout(()=>{
+  document.getElementById('preloader').classList.add('hide');
+  setTimeout(()=>document.getElementById('preloader').remove(),900);
+},4500);
+
+// ========== NAVBAR ==========
+const navbar=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{
+  navbar.classList.toggle('scrolled',window.scrollY>80);
+});
+
+// ========== PARTICLES ==========
+const canvas=document.getElementById('particles-canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+const pts=[];
+for(let i=0;i<80;i++) pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.5});
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(201,168,76,0.5)';ctx.fill();
+    pts.forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<130){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(201,168,76,${.15*(1-d/130)})`;ctx.lineWidth=.5;ctx.stroke();}
+    });
+  });
+  requestAnimationFrame(drawParticles);
+}drawParticles();
+
+// ========== SCROLL REVEAL ==========
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>observer.observe(el));
+
+// ========== COUNTER ==========
+const counterObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting&&!e.target.dataset.done){
+      e.target.dataset.done=1;
+      const target=+e.target.dataset.target;
+      let cur=0;
+      const step=Math.ceil(target/60);
+      const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t);}e.target.textContent=cur;},30);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
+
+// ========== GALLERY LIGHTBOX ==========
+document.querySelectorAll('.gal-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    const src=item.querySelector('img').src;
+    document.getElementById('lightbox-img').src=src;
+    document.getElementById('lightbox').classList.add('open');
+  });
+});
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');}
+
+// ========== GALLERY FILTER ==========
+function filterGallery(cat,tab){
+  document.querySelectorAll('.g-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.gal-item').forEach(item=>{
+    if(cat==='all'||item.dataset.cat===cat){
+      item.style.display='block';item.style.opacity='1';
+    } else {
+      item.style.opacity='0';
+      setTimeout(()=>item.style.display='none',300);
+    }
+  });
+}
+
+// ========== TESTIMONIALS ==========
+let slideIdx=0;
+const totalSlides=4;
+function goToSlide(n){
+  slideIdx=n;
+  document.getElementById('testTrack').style.transform=`translateX(-${n*100}%)`;
+  document.querySelectorAll('.test-dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+}
+function nextSlide(){goToSlide((slideIdx+1)%totalSlides);}
+function prevSlide(){goToSlide((slideIdx-1+totalSlides)%totalSlides);}
+setInterval(nextSlide,5000);
+
+// ========== MODAL ==========
+function openModal(){document.getElementById('inquiry-modal').classList.add('open');}
+function closeModal(){document.getElementById('inquiry-modal').classList.remove('open');}
+document.getElementById('inquiry-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ========== WHATSAPP ==========
+function openWhatsApp(){
+  window.open('https://wa.me/919876543210?text=Hello%20Catalyx%20Biotech!%20I%20am%20interested%20in%20your%20enzyme%20products.%20Please%20share%20more%20details.','_blank');
+}
+
+// ========== FORM SUBMISSIONS ==========
+function submitContactForm(){
+  const name=document.getElementById('cf-name').value;
+  const email=document.getElementById('cf-email').value;
+  if(!name||!email){alert('Please fill in required fields.');return;}
+  document.getElementById('contactFormWrap').style.display='none';
+  document.getElementById('contactSuccess').style.display='block';
+}
+function submitModalForm(){
+  const name=document.getElementById('m-name').value;
+  const email=document.getElementById('m-email').value;
+  if(!name||!email){alert('Please fill in your name and email.');return;}
+  document.getElementById('modalFormWrap').style.display='none';
+  document.getElementById('modalSuccess').style.display='block';
+}
+
+// ========== HAMBURGER ==========
+document.getElementById('hamburger').addEventListener('click',function(){
+  this.classList.toggle('open');
+  const nl=document.querySelector('.nav-links');
+  if(!nl.style.display||nl.style.display==='none'){
+    nl.style.cssText='display:flex;flex-direction:column;position:fixed;top:70px;left:0;right:0;background:rgba(5,5,8,0.98);padding:40px;z-index:999;gap:20px;';
+  } else {nl.style.display='none';}
+});
+
+// ========== 3D TILT on PRODUCT CARDS ==========
+document.querySelectorAll('.prod-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(800px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateY(-8px)`;
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateY(0) rotateX(0) translateY(0)';
+  });
+});
+
+// ========== PARALLAX HERO ==========
+window.addEventListener('scroll',()=>{
+  const hero=document.querySelector('.hero-bg');
+  if(hero) hero.style.transform=`scale(1.08) translateY(${window.scrollY*0.3}px)`;
+});
+
+// ========== KEYBOARD ESC ==========
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeLightbox();}
+});
+</script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
